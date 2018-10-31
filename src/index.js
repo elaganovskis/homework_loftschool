@@ -16,7 +16,7 @@ function returnFirstArgument(x) {
   return x;
 }
 returnFirstArgument(10);
-//Learning git, github
+
 
 
 /*
