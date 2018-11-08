@@ -9,6 +9,7 @@ import {
     returnFnResult
 } from '../src/index';
 
+<<<<<<< HEAD
 describe('ДЗ 1 - функции', () => {
     describe('returnFirstArgument', () => {
         it('должна возвращать переданный аргумент', () => {
@@ -110,5 +111,10 @@ describe('ДЗ 1 - функции', () => {
 
             assert.equal(result(), valuesArr.join(''));
         });
+=======
+describe('Test', () => {
+    it('should work', () => {
+        assert.isTrue(true);
+>>>>>>> master
     });
 });
