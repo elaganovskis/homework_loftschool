@@ -1,121 +1,120 @@
-/* ДЗ 1 - Функции */
+/* ДЗ 5 - DOM Events */
 
 /*
  Задание 1:
 
- 1.1: Добавьте к функции параметр с любым именем
- 1.2: Функция должна возвращать аргумент, переданный ей в качестве параметра
+ Функция должна добавлять обработчик fn события eventName к элементу target
 
  Пример:
-   returnFirstArgument(10) вернет 10
-   returnFirstArgument('привет') вернет `привет`
-
- Другими словами: функция должна возвращать в неизменном виде то, что поступает ей на вход
+   addListener('click', document.querySelector('a'), () => console.log('...')) // должна добавить указанный обработчик кликов на указанный элемент
  */
-function returnFirstArgument(x) {
-  return x;
+function addListener(eventName, target, fn) {
+  target.addEventListener(eventName, fn);
 }
-returnFirstArgument(10);
-
 
 /*
  Задание 2:
 
- 2.1: Функция должна возвращать сумму переданных аргументов
+ Функция должна удалять у элемента target обработчик fn события eventName
 
  Пример:
-   sumWithDefaults(10, 20) вернет 30
-   sumWithDefaults(2, 4) вернет 6
-
- 2.1 *: Значение по умолчанию для второго аргумента должно быть равно 100
-
- Пример:
-   sumWithDefaults(10) вернет 110
+   removeListener('click', document.querySelector('a'), someHandler) // должна удалить указанный обработчик кликов на указанный элемент
  */
-function sumWithDefaults(a, b) {
-  if(b === undefined) {
-    b = 100;
-  }
-  return a + b;
+function removeListener(eventName, target, fn) {
+  target.removeEventListener(eventName, fn);
 }
-sumWithDefaults(10);
 
 /*
  Задание 3:
 
- Функция должна принимать другую функцию и возвращать результат вызова этой функции
+ Функция должна добавить к элементу target такой обработчик на события eventName, чтобы он отменял действия по умолчанию
 
  Пример:
-   returnFnResult(() => 'привет') вернет 'привет'
+   skipDefault('click', document.querySelector('a')) // после вызова функции, клики на указанную ссылку не должны приводить к переходу на другую страницу
  */
-function returnFnResult(fn) {
-  return fn();
+function skipDefault(eventName, target) {
+  target.addEventListener(eventName, function(eventName){
+    eventName.preventDefault();
+  });
 }
+
 /*
  Задание 4:
 
- Функция должна принимать число и возвращать новую функцию (F)
- При вызове функции F, переданное ранее число должно быть увеличено на единицу и возвращено из F
+ Функция должна эмулировать событие click для элемента target
 
  Пример:
-   var f = returnCounter(10);
-
-   console.log(f()); // выведет 11
-   console.log(f()); // выведет 12
-   console.log(f()); // выведет 13
+   emulateClick(document.querySelector('a')) // для указанного элемента должно быть сэмулировано события click
  */
-function returnCounter(number) {
-  if (number === undefined) {
-    number = 0;
-  }
-
-  return function F() {
-    return ++number;
-  }
+function emulateClick(target) {
+  var event = new CustomEvent('Event');
+  event.initEvent('click', true, true);
+  target.addEventListener('click', function(){},);
+  target.dispatchEvent(event);
 }
 
 /*
- Задание 5 *:
+ Задание 5:
 
- Функция должна возвращать все переданные ей аргументы в виде массива
- Количество переданных аргументов заранее неизвестно
+ Функция должна добавить такой обработчик кликов к элементу target,
+ который реагирует (вызывает fn) только на клики по элементам BUTTON внутри target
 
  Пример:
-   returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
+   delegate(document.body, () => console.log('кликнули на button')) // добавит такой обработчик кликов для body, который будет вызывать указанную функцию только если кликнули на кнопку (элемент с тегом button)
  */
-function returnArgumentsArray(...massiv) {
-  return Array.from(massiv);
+function delegate(target, fn) {
+  target.addEventListener('click', function(button){
+    if(button.target.tagName == 'BUTTON') {
+      fn();
+    }
+  });
 }
-returnArgumentsArray(1, 2, 3, 4);
 
 /*
- Задание 6 *:
+ Задание 6:
 
- Функция должна принимать другую функцию (F) и некоторое количество дополнительных аргументов
- Функция должна привязать переданные аргументы к функции F и вернуть получившуюся функцию
+ Функция должна добавить такой обработчик кликов к элементу target,
+ который сработает только один раз и удалится (перестанет срабатывать для последующих кликов по указанному элементу)
 
  Пример:
-   function sum(a, b) {
-     return a + b;
-   }
-
-   var newSum = bindFunction(sum, 2, 4);
-
-   console.log(newSum()) выведет 6
+   once(document.querySelector('button'), () => console.log('обработчик выполнился!')) // добавит такой обработчик кликов для указанного элемента, который вызовется только один раз и затем удалится
  */
-function bindFunction(F) {
-  var otherArguments = arguments;
-  var newFn = F.apply(otherArguments);
-  return newFn;
+function once(target, fn) {
+  var isClicked;
+  if (isClicked) {
+    target.addEventListener('click', function() {
+      fn();
+      isClicked = false;
+    });
+  } else {
+    target.addEventListener('click', function(e) {
+      e.preventDefault();
+    });
+  }
+
+
+  function once(target, fn) {
+    target.addEventListener('click', function (e) {
+      fn();
+      e.preventDefault();
+    })
+  }
+
+  function once(target, fn) {
+    target.addEventListener('click', function (e) {
+      fn();
+      target.removeEventListener('click')
+    })
+  }
 }
-// несмог выполнить
+
 
 
 export {
-    returnFirstArgument,
-    sumWithDefaults,
-    returnArgumentsArray,
-    returnFnResult,
-    returnCounter,
-    bindFunction
-}
+    addListener,
+    removeListener,
+    skipDefault,
+    emulateClick,
+    delegate,
+    once
+};
